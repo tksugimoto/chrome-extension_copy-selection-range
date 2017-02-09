@@ -19,6 +19,8 @@
 			text += NEW_LINE + (listType === "ul" ? "-" : "+").repeat(listDepth) + " ";
 		} else if (tagName === "a") {
 			text += "[["
+		} else if (tagName === "img") {
+			text += `#image(${element.src})`;
 		} else if (tagName === "p") {
 			text += NEW_LINE;
 		}
