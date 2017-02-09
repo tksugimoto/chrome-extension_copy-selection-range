@@ -2,7 +2,7 @@
 	const NEW_LINE = "\n";
 	const transformToBacklogFormat = (element, state = {listTypeHistory: []}) => {
 		if (element instanceof Text) {
-			return element.textContent.replace(/^\n+|\n+$/g);
+			return element.textContent.replace(/^\n+|\n+$/g, "");
 		}
 		let text = "";
 		const tagName = element.tagName.toLowerCase();
