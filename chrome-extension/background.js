@@ -1,11 +1,17 @@
 
 const CONTEXT_MENU_ID_COPY_HTML = "a";
+const CONTEXT_MENU_ID_COPY_MARKDOWN = "b";
 
 function createContextMenus() {
 	chrome.contextMenus.create({
 		title: "選択範囲のHTMLをコピー",
 		contexts: ["selection"],
 		id: CONTEXT_MENU_ID_COPY_HTML
+	});
+	chrome.contextMenus.create({
+		title: "選択範囲をMarkdown書式でコピー",
+		contexts: ["selection"],
+		id: CONTEXT_MENU_ID_COPY_MARKDOWN
 	});
 }
 
@@ -17,6 +23,11 @@ chrome.contextMenus.onClicked.addListener(info => {
 		chrome.tabs.executeScript({
 			frameId: info.frameId,
 			file: "/copy_html.js"
+		});
+	} else if (info.menuItemId === CONTEXT_MENU_ID_COPY_MARKDOWN) {
+		chrome.tabs.executeScript({
+			frameId: info.frameId,
+			file: "/copy_by_markdown_format.js"
 		});
 	}
 });

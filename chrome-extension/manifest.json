@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"manifest_version": 2,
 
-	"description": "選択範囲のHTMLをコピー",
+	"description": "選択範囲をコピー(HTML / Markdown書式)",
 
 	"permissions": [
 		"contextMenus",
