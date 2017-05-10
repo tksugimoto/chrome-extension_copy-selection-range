@@ -23,6 +23,8 @@
 			text += "["
 		} else if (tagName === "p") {
 			text += NEW_LINE.repeat(2);
+		} else if (tagName === "br") {
+			text += NEW_LINE;
 		}
 
 		// 子
