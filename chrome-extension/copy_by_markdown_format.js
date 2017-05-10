@@ -4,7 +4,7 @@
 
 	const transformToMarkdownFormat = (element, state = {listTypeHistory: []}) => {
 		if (element instanceof Text) {
-			return element.textContent.replace(/^\n+|\n+$/g, "");
+			return element.textContent.trim();
 		}
 		let text = "";
 		const tagName = element.tagName.toLowerCase();
