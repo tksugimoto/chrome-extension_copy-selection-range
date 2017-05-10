@@ -21,6 +21,8 @@
 			text += NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} `;
 		} else if (tagName === "a") {
 			text += "["
+		} else if (tagName === "pre") {
+			return NEW_LINE + "```" + NEW_LINE + element.innerText + NEW_LINE + "```";
 		} else if (tagName === "p") {
 			text += NEW_LINE.repeat(2);
 		} else if (tagName === "br") {
