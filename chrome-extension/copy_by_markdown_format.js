@@ -23,6 +23,8 @@
 			text += "["
 		} else if (tagName === "pre") {
 			return NEW_LINE + "```" + NEW_LINE + element.innerText + NEW_LINE + "```";
+		} else if (tagName === "code") {
+			text += "`";
 		} else if (tagName === "p") {
 			text += NEW_LINE.repeat(2);
 		} else if (tagName === "br") {
@@ -39,6 +41,8 @@
 			state.listTypeHistory.pop();
 		} else if (tagName === "a") {
 			text += `](${element.href})`;
+		} else if (tagName === "code") {
+			text += "`";
 		}
 		return text;
 	};
