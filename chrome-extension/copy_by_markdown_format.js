@@ -42,7 +42,7 @@
 		if (tagName === "ul" || tagName === "ol") {
 			state.listTypeHistory.pop();
 		} else if (tagName === "a") {
-			text += `](${element.href})`;
+			text += `](${element.href} "${element.title}")`;
 		} else if (tagName === "code") {
 			text += "`";
 		}
