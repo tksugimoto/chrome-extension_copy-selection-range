@@ -23,6 +23,8 @@
 			text += "["
 		} else if (tagName === "img") {
 			text += `![${element.alt}](${element.src})`;
+		} else if (tagName === "input" && element.type === "checkbox") {
+			return `[${element.checked ? "x" : " "}] `;
 		} else if (tagName === "pre") {
 			return NEW_LINE + "```" + NEW_LINE + element.innerText + NEW_LINE + "```";
 		} else if (tagName === "code") {
