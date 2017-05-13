@@ -2,53 +2,119 @@
 	const NEW_LINE = "\n";
 	const INDENT = "\t";
 
-	const transformToMarkdownFormat = (element, state = {listTypeHistory: []}) => {
-		if (element instanceof Text) {
-			return element.textContent.trim();
+	class transformFormat {
+		constructor({isMatch, transform}) {
+			this._isMatch = isMatch;
+			this._transform = transform;
 		}
-		let text = "";
-		const tagName = element.tagName.toLowerCase();
-
-		// 開始
-		if (tagName.match(/^h(\d+)$/)) {
-			const level = parseInt(RegExp.$1);
-			text += NEW_LINE + "#".repeat(level) + " ";
-		} else if (tagName === "ul" || tagName === "ol") {
-			state.listTypeHistory.push(tagName === "ul" ? "*" : "1.");
-		} else if (tagName === "li") {
+		checkAndTransform(element, state, getChildrenText) {
+			const tagName = element.tagName ? element.tagName.toLowerCase() : "";
+			const isMatch = this._isMatch({element, tagName});
+			if (isMatch) {
+				const matchArgs = isMatch;
+				return {
+					matched: true,
+					text: this._transform({element, matchArgs, getChildrenText, state})
+				};
+			} else {
+				return {matched: false};
+			}
+		}
+	}
+	const formats = [new transformFormat({
+		isMatch: ({element}) => element instanceof Text,
+		transform: ({element}) => element.textContent.trim()
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName.match(/^h(\d+)$/),
+		transform: ({matchArgs, getChildrenText}) => {
+			const level = parseInt(matchArgs[1]);
+			return NEW_LINE + "#".repeat(level) + " " + getChildrenText();
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "ul",
+		transform: ({state, getChildrenText}) => {
+			state.listTypeHistory.push("*");
+			const childrenText = getChildrenText();
+			state.listTypeHistory.pop();
+			return childrenText;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "ol",
+		transform: ({state, getChildrenText}) => {
+			state.listTypeHistory.push("1.");
+			const childrenText = getChildrenText();
+			state.listTypeHistory.pop();
+			return childrenText;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "li",
+		transform: ({state, getChildrenText}) => {
 			const listDepth = state.listTypeHistory.length;
 			const listType = state.listTypeHistory[listDepth - 1]
-			text += NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} `;
-		} else if (tagName === "a") {
-			text += "["
-		} else if (tagName === "img") {
-			text += `![${element.alt}](${element.src})`;
-		} else if (tagName === "input" && element.type === "checkbox") {
-			return `[${element.checked ? "x" : " "}] `;
-		} else if (tagName === "pre") {
+			return NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} ` + getChildrenText();
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "a",
+		transform: ({element, getChildrenText}) => {
+			return `[${getChildrenText()}](${element.href} "${element.title}")`;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "img",
+		transform: ({element}) => {
+			return `![${element.alt}](${element.src})`;
+		}
+	}), new transformFormat({
+		isMatch: ({element, tagName}) => tagName === "input" && element.type === "checkbox",
+		transform: ({element}) => `[${element.checked ? "x" : " "}] `
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "pre",
+		transform: ({element}) => {
 			return NEW_LINE + "```" + NEW_LINE + element.innerText + NEW_LINE + "```";
-		} else if (tagName === "code") {
-			text += "`";
-		} else if (tagName === "p") {
-			text += NEW_LINE.repeat(2);
-		} else if (tagName === "br") {
-			text += NEW_LINE;
 		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "code",
+		transform: ({getChildrenText}) => "`" + getChildrenText() + "`"
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "p",
+		transform: ({getChildrenText}) => NEW_LINE.repeat(2) + getChildrenText()
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "br",
+		transform: () => NEW_LINE
+	})];
 
-		// 子
-		element.childNodes.forEach(child => {
-			text += transformToMarkdownFormat(child, state);
-		});
+	// 上記にマッチしなかった場合
+	formats.push(new transformFormat({
+		isMatch: () => true,
+		transform: ({getChildrenText}) => getChildrenText()
+	}));
 
-		// 終了
-		if (tagName === "ul" || tagName === "ol") {
-			state.listTypeHistory.pop();
-		} else if (tagName === "a") {
-			text += `](${element.href} "${element.title}")`;
-		} else if (tagName === "code") {
-			text += "`";
-		}
-		return text;
+	const transformToMarkdownFormat = (element, state = {listTypeHistory: []}) => {
+		const getChildrenText = () => {
+			let childrenText = "";
+			element.childNodes.forEach(child => {
+				childrenText += transformToMarkdownFormat(child, state);
+			});
+			return childrenText;
+		};
+		const initialResult = {
+			done: false,
+			text: ""
+		};
+		return formats.reduce((result, format) => {
+			if (result.done) {
+				return result;
+			} else {
+				const {matched, text} = format.checkAndTransform(element, state, getChildrenText);
+				if (matched) {
+					return {
+						done: true,
+						text
+					};
+				} else {
+					return result;
+				}
+			}
+		}, initialResult).text;
 	};
 
 	const selection = window.getSelection();
