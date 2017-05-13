@@ -56,7 +56,9 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "A",
 		transform: ({element, getChildrenText}) => {
-			return `[${getChildrenText()}](${element.href} "${element.title}")`;
+			const text = getChildrenText();
+			if (!text) return "";
+			return `[${text}](${element.href} "${element.title}")`;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "IMG",
