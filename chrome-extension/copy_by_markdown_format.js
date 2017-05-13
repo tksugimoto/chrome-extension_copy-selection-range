@@ -8,7 +8,7 @@
 			this._transform = transform;
 		}
 		checkAndTransform(element, state, getChildrenText) {
-			const tagName = element.tagName ? element.tagName.toLowerCase() : "";
+			const tagName = element.tagName || "";
 			const isMatch = this._isMatch({element, tagName});
 			if (isMatch) {
 				const matchArgs = isMatch;
@@ -25,13 +25,13 @@
 		isMatch: ({element}) => element instanceof Text,
 		transform: ({element}) => element.textContent.trim()
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName.match(/^h(\d+)$/),
+		isMatch: ({tagName}) => tagName.match(/^H(\d+)$/),
 		transform: ({matchArgs, getChildrenText}) => {
 			const level = parseInt(matchArgs[1]);
 			return NEW_LINE + "#".repeat(level) + " " + getChildrenText();
 		}
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "ul",
+		isMatch: ({tagName}) => tagName === "UL",
 		transform: ({state, getChildrenText}) => {
 			state.listTypeHistory.push("*");
 			const childrenText = getChildrenText();
@@ -39,7 +39,7 @@
 			return childrenText;
 		}
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "ol",
+		isMatch: ({tagName}) => tagName === "OL",
 		transform: ({state, getChildrenText}) => {
 			state.listTypeHistory.push("1.");
 			const childrenText = getChildrenText();
@@ -47,38 +47,38 @@
 			return childrenText;
 		}
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "li",
+		isMatch: ({tagName}) => tagName === "LI",
 		transform: ({state, getChildrenText}) => {
 			const listDepth = state.listTypeHistory.length;
 			const listType = state.listTypeHistory[listDepth - 1]
 			return NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} ` + getChildrenText();
 		}
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "a",
+		isMatch: ({tagName}) => tagName === "A",
 		transform: ({element, getChildrenText}) => {
 			return `[${getChildrenText()}](${element.href} "${element.title}")`;
 		}
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "img",
+		isMatch: ({tagName}) => tagName === "IMG",
 		transform: ({element}) => {
 			return `![${element.alt}](${element.src})`;
 		}
 	}), new transformFormat({
-		isMatch: ({element, tagName}) => tagName === "input" && element.type === "checkbox",
+		isMatch: ({element, tagName}) => tagName === "INPUT" && element.type === "checkbox",
 		transform: ({element}) => `[${element.checked ? "x" : " "}] `
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "pre",
+		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element}) => {
 			return NEW_LINE + "```" + NEW_LINE + element.innerText + NEW_LINE + "```";
 		}
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "code",
+		isMatch: ({tagName}) => tagName === "CODE",
 		transform: ({getChildrenText}) => "`" + getChildrenText() + "`"
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "p",
+		isMatch: ({tagName}) => tagName === "P",
 		transform: ({getChildrenText}) => NEW_LINE.repeat(2) + getChildrenText()
 	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "br",
+		isMatch: ({tagName}) => tagName === "BR",
 		transform: () => NEW_LINE
 	})];
 
