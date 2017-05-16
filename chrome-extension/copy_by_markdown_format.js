@@ -61,6 +61,9 @@
 			return `[${text}](${element.href} "${element.title}")`;
 		}
 	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "EM",
+		transform: ({getChildrenText}) => `*${getChildrenText()}*`
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "IMG",
 		transform: ({element}) => {
 			return `![${element.alt}](${element.src})`;
