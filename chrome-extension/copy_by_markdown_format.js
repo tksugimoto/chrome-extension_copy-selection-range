@@ -67,6 +67,9 @@
 		isMatch: ({tagName}) => tagName === "STRONG",
 		transform: ({getChildrenText}) => `**${getChildrenText()}**`
 	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "DEL",
+		transform: ({getChildrenText}) => `~~${getChildrenText()}~~`
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "IMG",
 		transform: ({element}) => {
 			return `![${element.alt}](${element.src})`;
