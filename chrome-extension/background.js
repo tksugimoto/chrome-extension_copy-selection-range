@@ -1,5 +1,10 @@
 
-const CONTEXT_MENU_ID_COPY_HTML = "a";
+const generateContextMenuId = (() => {
+	let count = 0;
+	return () => String(count++);
+})();
+
+const CONTEXT_MENU_ID_COPY_HTML = generateContextMenuId();
 
 function createContextMenus() {
 	chrome.contextMenus.create({
