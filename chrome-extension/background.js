@@ -1,11 +1,22 @@
 
-const CONTEXT_MENU_ID_COPY_HTML = "a";
+const generateContextMenuId = (() => {
+	let count = 0;
+	return () => String(count++);
+})();
+
+const menus = [{
+	id: generateContextMenuId(),
+	title: "選択範囲のHTMLをコピー",
+	contentScriptFile: "/copy_html.js"
+}];
 
 function createContextMenus() {
-	chrome.contextMenus.create({
-		title: "選択範囲のHTMLをコピー",
-		contexts: ["selection"],
-		id: CONTEXT_MENU_ID_COPY_HTML
+	menus.forEach(menu => {
+		chrome.contextMenus.create({
+			title: menu.title,
+			contexts: ["selection"],
+			id: menu.id
+		});
 	});
 }
 
@@ -13,10 +24,11 @@ chrome.runtime.onInstalled.addListener(createContextMenus);
 chrome.runtime.onStartup.addListener(createContextMenus);
 
 chrome.contextMenus.onClicked.addListener(info => {
-	if (info.menuItemId === CONTEXT_MENU_ID_COPY_HTML) {
+	const matchedMenu = menus.find(menu => info.menuItemId === menu.id);
+	if (matchedMenu) {
 		chrome.tabs.executeScript({
 			frameId: info.frameId,
-			file: "/copy_html.js"
+			file: matchedMenu.contentScriptFile
 		});
 	}
 });
