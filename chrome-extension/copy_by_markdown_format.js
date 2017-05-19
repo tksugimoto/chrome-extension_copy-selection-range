@@ -28,7 +28,7 @@
 		isMatch: ({tagName}) => tagName.match(/^H(\d+)$/),
 		transform: ({matchArgs, getChildrenText}) => {
 			const level = parseInt(matchArgs[1]);
-			return NEW_LINE + "#".repeat(level) + " " + getChildrenText();
+			return NEW_LINE.repeat(2) + "#".repeat(level) + " " + getChildrenText();
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "UL",
