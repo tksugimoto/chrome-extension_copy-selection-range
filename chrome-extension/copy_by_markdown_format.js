@@ -49,9 +49,18 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "LI",
 		transform: ({state, getChildrenText}) => {
+			const liIsTopLevel = state.listTypeHistory.length === 0;
+			if (liIsTopLevel) {
+				// <LI>途中から選択した場合、親要素情報が消えるため親要素を<UL>に決め打ち
+				state.listTypeHistory.push("*");
+			}
 			const listDepth = state.listTypeHistory.length;
 			const listType = state.listTypeHistory[listDepth - 1]
-			return NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} ` + getChildrenText();
+			const childrenText = NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} ` + getChildrenText();
+			if (liIsTopLevel) {
+				state.listTypeHistory.pop();
+			}
+			return childrenText;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "A",
