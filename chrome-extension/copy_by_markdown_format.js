@@ -36,7 +36,9 @@
 			state.listTypeHistory.push("*");
 			const childrenText = getChildrenText();
 			state.listTypeHistory.pop();
-			return childrenText;
+			const newLineIfTopLevel = state.listTypeHistory.length === 0 ? NEW_LINE : "";
+			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
+			return newLineIfTopLevel + childrenText;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "OL",
@@ -44,7 +46,9 @@
 			state.listTypeHistory.push("1.");
 			const childrenText = getChildrenText();
 			state.listTypeHistory.pop();
-			return childrenText;
+			const newLineIfTopLevel = state.listTypeHistory.length === 0 ? NEW_LINE : "";
+			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
+			return newLineIfTopLevel + childrenText;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "LI",
