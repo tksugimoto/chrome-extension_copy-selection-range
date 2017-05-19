@@ -89,7 +89,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element}) => {
-			return NEW_LINE + "```" + NEW_LINE + element.innerText + NEW_LINE + "```";
+			return NEW_LINE.repeat(2) + "```" + NEW_LINE + element.innerText + NEW_LINE + "```" + NEW_LINE;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
