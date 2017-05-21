@@ -100,7 +100,10 @@
 		transform: ({getChildrenText}) => "`" + getChildrenText() + "`"
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "P",
-		transform: ({getChildrenText}) => NEW_LINE.repeat(2) + getChildrenText()
+		transform: ({getChildrenText, state}) => {
+			const inListItem = state.listTypeHistory.length !== 0;
+			return NEW_LINE.repeat(inListItem ? 0 : 2) + getChildrenText();
+		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BR",
 		transform: () => NEW_LINE
