@@ -92,8 +92,13 @@
 		transform: ({element}) => `[${element.checked ? "x" : " "}] `
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
-		transform: ({element}) => {
-			return NEW_LINE.repeat(2) + "```" + NEW_LINE + element.innerText + NEW_LINE + "```" + NEW_LINE;
+		transform: ({element, state}) => {
+			let contents = ["```"].concat(element.innerText.split(NEW_LINE)).concat("```");
+			if (state.listTypeHistory.length !== 0) {
+				const indentForPre = INDENT.repeat(state.listTypeHistory.length);
+				contents = contents.map(line => indentForPre + line);
+			}
+			return NEW_LINE.repeat(2) + contents.join(NEW_LINE) + NEW_LINE;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
