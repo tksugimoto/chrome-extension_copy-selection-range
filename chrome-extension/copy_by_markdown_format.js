@@ -9,6 +9,9 @@
 		get listDepth() {
 			return this.listTypeHistory.length;
 		}
+		get inListItem() {
+			return this.listDepth !== 0;
+		}
 	}
 
 	class transformFormat {
@@ -45,7 +48,7 @@
 			state.listTypeHistory.push("*");
 			const childrenText = getChildrenText();
 			state.listTypeHistory.pop();
-			const newLineIfTopLevel = state.listDepth === 0 ? NEW_LINE : "";
+			const newLineIfTopLevel = !state.inListItem ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
 		}
@@ -55,14 +58,14 @@
 			state.listTypeHistory.push("1.");
 			const childrenText = getChildrenText();
 			state.listTypeHistory.pop();
-			const newLineIfTopLevel = state.listDepth === 0 ? NEW_LINE : "";
+			const newLineIfTopLevel = !state.inListItem ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "LI",
 		transform: ({state, getChildrenText}) => {
-			const liIsTopLevel = state.listDepth === 0;
+			const liIsTopLevel = !state.inListItem;
 			if (liIsTopLevel) {
 				// <LI>途中から選択した場合、親要素情報が消えるため親要素を<UL>に決め打ち
 				state.listTypeHistory.push("*");
@@ -103,7 +106,7 @@
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
 			let contents = ["```"].concat(element.innerText.split(NEW_LINE)).concat("```");
-			if (state.listDepth !== 0) {
+			if (state.inListItem) {
 				const indentForPre = INDENT.repeat(state.listDepth);
 				contents = contents.map(line => indentForPre + line);
 			}
@@ -115,8 +118,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "P",
 		transform: ({getChildrenText, state}) => {
-			const inListItem = state.listDepth !== 0;
-			return NEW_LINE.repeat(inListItem ? 0 : 2) + getChildrenText();
+			return NEW_LINE.repeat(state.inListItem ? 0 : 2) + getChildrenText();
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BR",
