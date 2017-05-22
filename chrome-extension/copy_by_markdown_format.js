@@ -2,6 +2,12 @@
 	const NEW_LINE = "\n";
 	const INDENT = "\t";
 
+	class State {
+		constructor() {
+			this.listTypeHistory = [];
+		}
+	}
+
 	class transformFormat {
 		constructor({isMatch, transform}) {
 			this._isMatch = isMatch;
@@ -120,7 +126,7 @@
 		transform: ({getChildrenText}) => getChildrenText()
 	}));
 
-	const transformToMarkdownFormat = (element, state = {listTypeHistory: []}) => {
+	const transformToMarkdownFormat = (element, state = new State()) => {
 		const getChildrenText = () => {
 			let childrenText = "";
 			element.childNodes.forEach(child => {
