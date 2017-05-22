@@ -6,6 +6,9 @@
 		constructor() {
 			this.listTypeHistory = [];
 		}
+		get listDepth() {
+			return this.listTypeHistory.length;
+		}
 	}
 
 	class transformFormat {
@@ -42,7 +45,7 @@
 			state.listTypeHistory.push("*");
 			const childrenText = getChildrenText();
 			state.listTypeHistory.pop();
-			const newLineIfTopLevel = state.listTypeHistory.length === 0 ? NEW_LINE : "";
+			const newLineIfTopLevel = state.listDepth === 0 ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
 		}
@@ -52,19 +55,19 @@
 			state.listTypeHistory.push("1.");
 			const childrenText = getChildrenText();
 			state.listTypeHistory.pop();
-			const newLineIfTopLevel = state.listTypeHistory.length === 0 ? NEW_LINE : "";
+			const newLineIfTopLevel = state.listDepth === 0 ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "LI",
 		transform: ({state, getChildrenText}) => {
-			const liIsTopLevel = state.listTypeHistory.length === 0;
+			const liIsTopLevel = state.listDepth === 0;
 			if (liIsTopLevel) {
 				// <LI>途中から選択した場合、親要素情報が消えるため親要素を<UL>に決め打ち
 				state.listTypeHistory.push("*");
 			}
-			const listDepth = state.listTypeHistory.length;
+			const listDepth = state.listDepth;
 			const listType = state.listTypeHistory[listDepth - 1];
 			const childrenText = NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} ` + getChildrenText();
 			if (liIsTopLevel) {
@@ -100,8 +103,8 @@
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
 			let contents = ["```"].concat(element.innerText.split(NEW_LINE)).concat("```");
-			if (state.listTypeHistory.length !== 0) {
-				const indentForPre = INDENT.repeat(state.listTypeHistory.length);
+			if (state.listDepth !== 0) {
+				const indentForPre = INDENT.repeat(state.listDepth);
 				contents = contents.map(line => indentForPre + line);
 			}
 			return NEW_LINE.repeat(2) + contents.join(NEW_LINE) + NEW_LINE;
@@ -112,7 +115,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "P",
 		transform: ({getChildrenText, state}) => {
-			const inListItem = state.listTypeHistory.length !== 0;
+			const inListItem = state.listDepth !== 0;
 			return NEW_LINE.repeat(inListItem ? 0 : 2) + getChildrenText();
 		}
 	}), new transformFormat({
