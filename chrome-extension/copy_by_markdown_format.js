@@ -6,6 +6,9 @@
 		constructor() {
 			this.listTypeHistory = [];
 		}
+		get deepestListType() {
+			return this.listTypeHistory[this.listTypeHistory.length - 1];
+		}
 		get listDepth() {
 			return this.listTypeHistory.length;
 		}
@@ -71,7 +74,7 @@
 				state.listTypeHistory.push("*");
 			}
 			const listDepth = state.listDepth;
-			const listType = state.listTypeHistory[listDepth - 1];
+			const listType = state.deepestListType;
 			const childrenText = NEW_LINE + INDENT.repeat(listDepth - 1) + `${listType} ` + getChildrenText();
 			if (liIsTopLevel) {
 				state.listTypeHistory.pop();
