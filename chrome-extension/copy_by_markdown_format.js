@@ -114,7 +114,7 @@
 				const indentForPre = INDENT.repeat(state.listDepth);
 				contents = contents.map(line => indentForPre + line);
 			}
-			return NEW_LINE.repeat(2) + contents.join(NEW_LINE) + NEW_LINE;
+			return NEW_LINE.repeat(2) + contents.join(NEW_LINE) + (!state.inListItem ? NEW_LINE : "");
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
