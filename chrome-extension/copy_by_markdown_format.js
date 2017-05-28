@@ -1,6 +1,7 @@
 {
 	const NEW_LINE = "\n";
 	const INDENT = "\t";
+	const RE_HEAD_LAST_NEW_LINES = new RegExp(`^${NEW_LINE}+|${NEW_LINE}+$`, "g");
 
 	class State {
 		constructor() {
@@ -108,7 +109,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
-			let contents = ["```"].concat(element.innerText.split(NEW_LINE)).concat("```");
+			let contents = ["```"].concat(element.innerText.replace(RE_HEAD_LAST_NEW_LINES, "").split(NEW_LINE)).concat("```");
 			if (state.inListItem) {
 				const indentForPre = INDENT.repeat(state.listDepth);
 				contents = contents.map(line => indentForPre + line);
