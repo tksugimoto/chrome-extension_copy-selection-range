@@ -85,9 +85,12 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "A",
 		transform: ({element, getChildrenText}) => {
-			const text = getChildrenText();
+			let text = getChildrenText();
 			if (!text) return "";
-			return `[${text}](${element.href} "${element.title}")`;
+			text = text.replace(/\[|\]|\\/g, "\\$&");
+			const url = element.href.replace(/[()]/g, "\\$&");
+			const title = element.title.replace(/"\)/g, '"\\)');
+			return `[${text}](${url} "${title}")`;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "EM",
