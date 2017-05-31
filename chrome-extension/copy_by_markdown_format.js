@@ -128,6 +128,9 @@
 			return NEW_LINE.repeat(state.inListItem ? 0 : 2) + getChildrenText();
 		}
 	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "HR",
+		transform: () => NEW_LINE + "___"
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BR",
 		transform: () => NEW_LINE
 	})];
