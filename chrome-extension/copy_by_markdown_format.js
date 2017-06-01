@@ -89,9 +89,8 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "A",
 		transform: ({element, getChildrenText}) => {
-			let text = getChildrenText();
+			const text = getChildrenText();
 			if (!text) return "";
-			text = text.replace(/\[|\]|\\/g, "\\$&");
 			const url = element.href.replace(/[()]/g, "\\$&");
 			const title = element.title.replace(/"\)/g, '"\\)');
 			return `[${text}](${url} "${title}")`;
