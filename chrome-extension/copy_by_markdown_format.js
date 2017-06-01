@@ -3,6 +3,10 @@
 	const INDENT = "\t";
 	const RE_HEAD_LAST_NEW_LINES = new RegExp(`^${NEW_LINE}+|${NEW_LINE}+$`, "g");
 
+	const escape = text => {
+		return text.replace(/[<]/g, "\\$&");
+	};
+
 	class State {
 		constructor() {
 			this.listTypeHistory = [];
@@ -39,7 +43,7 @@
 	}
 	const formats = [new transformFormat({
 		isMatch: ({element}) => element instanceof Text,
-		transform: ({element}) => element.textContent.replace(RE_HEAD_LAST_NEW_LINES, "")
+		transform: ({element}) => escape(element.textContent.replace(RE_HEAD_LAST_NEW_LINES, ""))
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName.match(/^H(\d+)$/),
 		transform: ({matchArgs, getChildrenText}) => {
