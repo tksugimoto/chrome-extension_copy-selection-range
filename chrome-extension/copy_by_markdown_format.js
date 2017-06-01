@@ -125,7 +125,7 @@
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
-		transform: ({getChildrenText}) => "`" + getChildrenText() + "`"
+		transform: ({element}) => "`" + element.innerText + "`"
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "P",
 		transform: ({getChildrenText, state}) => {
