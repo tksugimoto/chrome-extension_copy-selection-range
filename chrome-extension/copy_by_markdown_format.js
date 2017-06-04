@@ -1,6 +1,7 @@
 {
 	const NEW_LINE = "\n";
 	const INDENT = "\t";
+	const TEXT_BR = " ".repeat(2);
 	const RE_HEAD_LAST_NEW_LINES = new RegExp(`^${NEW_LINE}+|${NEW_LINE}+$`, "g");
 
 	const escape = text => {
@@ -135,7 +136,13 @@
 		transform: () => NEW_LINE + "___"
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BR",
-		transform: () => NEW_LINE
+		transform: ({state}) => {
+			if (state.inListItem) {
+				return TEXT_BR + NEW_LINE + INDENT.repeat(state.listDepth);
+			} else {
+				return NEW_LINE;
+			}
+		}
 	})];
 
 	// 上記にマッチしなかった場合
