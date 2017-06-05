@@ -52,6 +52,11 @@
 			return NEW_LINE.repeat(2) + "#".repeat(level) + " " + getChildrenText();
 		}
 	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "BLOCKQUOTE",
+		transform: ({getChildrenText}) => {
+			return getChildrenText().replace(new RegExp(NEW_LINE, "g"), `${NEW_LINE}> `);
+		}
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "UL",
 		transform: ({state, getChildrenText}) => {
 			state.listTypeHistory.push("*");
