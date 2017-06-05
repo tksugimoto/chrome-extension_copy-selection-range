@@ -5,7 +5,7 @@
 	const RE_HEAD_LAST_NEW_LINES = new RegExp(`^${NEW_LINE}+|${NEW_LINE}+$`, "g");
 
 	const escape = text => {
-		return text.replace(/[<#*`~_\[\]\\]/g, "\\$&");
+		return text.replace(/[<>#*`~_\[\]\\]/g, "\\$&");
 	};
 
 	class State {
