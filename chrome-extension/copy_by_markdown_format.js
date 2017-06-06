@@ -56,7 +56,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BLOCKQUOTE",
 		transform: ({getChildrenText}) => {
-			return getChildrenText().replace(RE_NEW_LINES, `${NEW_LINE}> `);
+			return getChildrenText().replace(RE_NEW_LINES, "$&> ");
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "UL",
