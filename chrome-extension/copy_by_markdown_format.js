@@ -132,7 +132,13 @@
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
-		transform: ({element}) => "`" + element.innerText + "`"
+		transform: ({element}) => {
+			const text = element.innerText;
+			const continuingBackquoteLengthList = text.split(/[^`]+/).map(s => s.length);
+			const maxContinuingBackquoteLength = Math.max.apply(null, continuingBackquoteLengthList);
+			const backquotes = "`".repeat(maxContinuingBackquoteLength + 1);
+			return `${backquotes} ${text} ${backquotes}`;
+		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "P",
 		transform: ({getChildrenText, state}) => {
