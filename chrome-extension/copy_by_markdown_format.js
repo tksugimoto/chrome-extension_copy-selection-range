@@ -4,7 +4,7 @@
 	const TEXT_BR = " ".repeat(2);
 	const RE_HEAD_LAST_NEW_LINES = new RegExp(`^${NEW_LINE}+|${NEW_LINE}+$`, "g");
 	const RE_NEW_LINES = new RegExp(NEW_LINE, "g");
-	const RE_SPECIAL_CHARS = /[<>#*`~_\[\]\\]/g;
+	const RE_SPECIAL_CHARS = /[<>#*`~_\-\[\]\\]/g;
 
 	const escape = text => {
 		return text.replace(RE_SPECIAL_CHARS, "\\$&");
