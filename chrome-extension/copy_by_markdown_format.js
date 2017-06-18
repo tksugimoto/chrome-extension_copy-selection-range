@@ -145,6 +145,28 @@
 			return NEW_LINE.repeat(state.inListItem ? 0 : 2) + getChildrenText();
 		}
 	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "TABLE",
+		transform: ({getChildrenText}) => {
+			return `${NEW_LINE}${getChildrenText()}`;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "THEAD",
+		transform: ({getChildrenText, element}) => {
+			const columnCount = element.querySelectorAll("tr > *").length;
+			const separator = `|${"---|".repeat(columnCount)}`;
+			return `${getChildrenText()}${NEW_LINE}${separator}`;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "TR",
+		transform: ({getChildrenText}) => {
+			return `${NEW_LINE}|${getChildrenText()}`;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "TD" || tagName === "TH",
+		transform: ({getChildrenText}) => {
+			return ` ${getChildrenText()} |`;
+		}
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "HR",
 		transform: () => NEW_LINE + "___"
 	}), new transformFormat({
