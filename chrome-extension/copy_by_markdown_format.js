@@ -152,8 +152,15 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "THEAD",
 		transform: ({getChildrenText, element}) => {
-			const columnCount = element.querySelectorAll("tr > *").length;
-			const separator = `|${"---|".repeat(columnCount)}`;
+			const textAligns = Array.from(element.querySelectorAll("tr > *")).map(e => e.style.textAlign);
+			const separators = textAligns.map(textAlign => {
+				switch (textAlign) {
+					case "right": return "--:";
+					case "center": return ":-:";
+					default: return "---";
+				}
+			});
+			const separator = `|${separators.join("|")}|`;
 			return `${getChildrenText()}${NEW_LINE}${separator}`;
 		}
 	}), new transformFormat({
