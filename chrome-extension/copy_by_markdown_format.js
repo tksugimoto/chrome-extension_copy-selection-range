@@ -114,6 +114,9 @@
 		isMatch: ({tagName}) => tagName === "DEL",
 		transform: ({getChildrenText}) => `~~${getChildrenText()}~~`
 	}), new transformFormat({
+		isMatch: ({tagName, element}) => tagName === "G-EMOJI" && element.hasAttribute("alias"),
+		transform: ({element}) => `:${element.getAttribute("alias")}:`
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "IMG",
 		transform: ({element}) => {
 			if (element.classList.contains("emoji")) {
