@@ -5,6 +5,7 @@
 	const RE_HEAD_LAST_NEW_LINES = new RegExp(`^${NEW_LINE}+|${NEW_LINE}+$`, "g");
 	const RE_NEW_LINES = new RegExp(NEW_LINE, "g");
 	const RE_SPECIAL_CHARS = /[<>#*`~_\-\[\]\\]/g;
+	const RE_EMOJI = /^:.+:$/;
 
 	const escape = text => {
 		return text.replace(RE_SPECIAL_CHARS, "\\$&");
@@ -115,6 +116,10 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "IMG",
 		transform: ({element}) => {
+			if (element.classList.contains("emoji")) {
+				if (RE_EMOJI.test(element.alt)) return element.alt;
+				if (RE_EMOJI.test(element.title)) return element.title;
+			}
 			return `![${element.alt}](${element.src})`;
 		}
 	}), new transformFormat({
