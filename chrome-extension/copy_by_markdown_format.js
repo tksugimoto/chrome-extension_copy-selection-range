@@ -129,9 +129,17 @@
 		isMatch: ({element, tagName}) => tagName === "INPUT" && element.type === "checkbox",
 		transform: ({element}) => `[${element.checked ? "x" : " "}] `
 	}), new transformFormat({
+		isMatch: ({element}) => typeof element.hasAttribute === "function" && element.hasAttribute("data-lang"),
+		transform: ({element, state, getChildrenText}) => {
+			state.dataLang = element.getAttribute("data-lang");
+			const childrenText = getChildrenText();
+			state.dataLang = null;
+			return childrenText;
+		}
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
-			let contents = ["```"].concat(element.innerText.replace(RE_HEAD_LAST_NEW_LINES, "").split(NEW_LINE)).concat("```");
+			let contents = ["```" + (state.dataLang || "")].concat(element.innerText.replace(RE_HEAD_LAST_NEW_LINES, "").split(NEW_LINE)).concat("```");
 			if (state.inListItem) {
 				const indentForPre = INDENT.repeat(state.listDepth);
 				contents = contents.map(line => indentForPre + line);
