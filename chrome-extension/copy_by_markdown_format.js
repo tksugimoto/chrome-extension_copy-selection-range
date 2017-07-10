@@ -161,6 +161,16 @@
 			return NEW_LINE.repeat(state.inListItem ? 0 : 2) + getChildrenText();
 		}
 	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "DETAILS",
+		transform: ({getChildrenText}) => {
+			return `${NEW_LINE}<details>${getChildrenText()}</details>`;
+		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "SUMMARY",
+		transform: ({getChildrenText}) => {
+			return `${NEW_LINE}<summary>${getChildrenText()}</summary>`;
+		}
+	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TABLE",
 		transform: ({getChildrenText}) => {
 			return `${NEW_LINE}${getChildrenText()}`;
