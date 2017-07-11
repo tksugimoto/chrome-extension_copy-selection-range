@@ -168,7 +168,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "SUMMARY",
 		transform: ({getChildrenText}) => {
-			return `${NEW_LINE}<summary>${getChildrenText()}</summary>`;
+			return `<summary>${getChildrenText()}</summary>`;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TABLE",
