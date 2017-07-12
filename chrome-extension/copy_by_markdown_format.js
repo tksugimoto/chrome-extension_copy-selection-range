@@ -226,6 +226,9 @@
 				return NEW_LINE;
 			}
 		}
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "SCRIPT",
+		transform: () => ""
 	})];
 
 	// 上記にマッチしなかった場合
