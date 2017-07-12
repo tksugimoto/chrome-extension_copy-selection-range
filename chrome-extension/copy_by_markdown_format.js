@@ -229,6 +229,9 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "SCRIPT",
 		transform: () => ""
+	}), new transformFormat({
+		isMatch: ({tagName}) => tagName === "STYLE",
+		transform: () => ""
 	})];
 
 	// 上記にマッチしなかった場合
