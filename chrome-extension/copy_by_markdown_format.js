@@ -177,13 +177,13 @@
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DT",
-		transform: ({getChildrenText}) => {
-			return `${NEW_LINE}${INDENT}<dt>${getChildrenText()}</dt>`;
+		transform: ({element}) => {
+			return `${NEW_LINE}${INDENT}<dt>${element.innerHTML}</dt>`;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DD",
-		transform: ({getChildrenText}) => {
-			return `${NEW_LINE}${INDENT}<dd>${getChildrenText()}</dd>`;
+		transform: ({element}) => {
+			return `${NEW_LINE}${INDENT}<dd>${element.innerHTML}</dd>`;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TABLE",
