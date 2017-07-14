@@ -162,13 +162,8 @@
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DETAILS",
-		transform: ({getChildrenText}) => {
-			return `${NEW_LINE}<details>${getChildrenText()}</details>`;
-		}
-	}), new transformFormat({
-		isMatch: ({tagName}) => tagName === "SUMMARY",
-		transform: ({getChildrenText}) => {
-			return `<summary>${getChildrenText()}</summary>`;
+		transform: ({element}) => {
+			return `${NEW_LINE}<details>${element.innerHTML.replace(/<br>/g, "")}</details>`;
 		}
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DL",
