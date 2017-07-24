@@ -27,18 +27,23 @@
 	}
 
 	class transformFormat {
-		constructor({isMatch, transform}) {
+		constructor({isMatch, transform, before, after}) {
 			this._isMatch = isMatch;
 			this._transform = transform;
+			this._before = before;
+			this._after = after;
 		}
 		checkAndTransform(element, state, getChildrenText) {
 			const tagName = element.tagName || "";
 			const isMatch = this._isMatch({element, tagName});
 			if (isMatch) {
 				const matchArgs = isMatch;
+				if (this._before) this._before({element, state});
+				const text = this._transform({element, state, matchArgs, getChildrenText});
+				if (this._after) this._after({element, state});
 				return {
 					matched: true,
-					text: this._transform({element, matchArgs, getChildrenText, state})
+					text
 				};
 			} else {
 				return {matched: false};
