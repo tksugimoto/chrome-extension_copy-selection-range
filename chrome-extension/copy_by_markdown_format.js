@@ -43,7 +43,7 @@
 				if (this._after) this._after({element, state});
 				return {
 					matched: true,
-					text
+					text,
 				};
 			} else {
 				return {matched: false};
@@ -52,18 +52,18 @@
 	}
 	const formats = [new transformFormat({
 		isMatch: ({element}) => element instanceof Text,
-		transform: ({element}) => escape(element.textContent.replace(RE_HEAD_LAST_NEW_LINES, ""))
+		transform: ({element}) => escape(element.textContent.replace(RE_HEAD_LAST_NEW_LINES, "")),
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName.match(/^H(\d+)$/),
 		transform: ({matchArgs, getChildrenText}) => {
 			const level = parseInt(matchArgs[1]);
 			return NEW_LINE.repeat(2) + "#".repeat(level) + " " + getChildrenText();
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BLOCKQUOTE",
 		transform: ({getChildrenText}) => {
 			return getChildrenText().replace(RE_NEW_LINES, "$&> ");
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "UL",
 		transform: ({state, getChildrenText}) => {
@@ -73,7 +73,7 @@
 			const newLineIfTopLevel = !state.inListItem ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "OL",
 		transform: ({state, getChildrenText}) => {
@@ -83,7 +83,7 @@
 			const newLineIfTopLevel = !state.inListItem ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "LI",
 		transform: ({state, getChildrenText}) => {
@@ -99,7 +99,7 @@
 				state.listTypeHistory.pop();
 			}
 			return childrenText;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "A",
 		transform: ({element, getChildrenText}) => {
@@ -108,19 +108,19 @@
 			const url = element.href.replace(/[()]/g, "\\$&");
 			const title = element.title.replace(/"\)/g, '"\\)');
 			return `[${text}](${url} "${title}")`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "EM",
-		transform: ({getChildrenText}) => `*${getChildrenText()}*`
+		transform: ({getChildrenText}) => `*${getChildrenText()}*`,
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "STRONG",
-		transform: ({getChildrenText}) => `**${getChildrenText()}**`
+		transform: ({getChildrenText}) => `**${getChildrenText()}**`,
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DEL",
-		transform: ({getChildrenText}) => `~~${getChildrenText()}~~`
+		transform: ({getChildrenText}) => `~~${getChildrenText()}~~`,
 	}), new transformFormat({
 		isMatch: ({tagName, element}) => tagName === "G-EMOJI" && element.hasAttribute("alias"),
-		transform: ({element}) => `:${element.getAttribute("alias")}:`
+		transform: ({element}) => `:${element.getAttribute("alias")}:`,
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "IMG",
 		transform: ({element}) => {
@@ -129,10 +129,10 @@
 				if (RE_EMOJI.test(element.title)) return element.title;
 			}
 			return `![${element.alt}](${element.src})`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({element, tagName}) => tagName === "INPUT" && element.type === "checkbox",
-		transform: ({element}) => `[${element.checked ? "x" : " "}] `
+		transform: ({element}) => `[${element.checked ? "x" : " "}] `,
 	}), new transformFormat({
 		isMatch: ({element}) => typeof element.hasAttribute === "function" && element.hasAttribute("data-lang"),
 		transform: ({element, state, getChildrenText}) => {
@@ -140,7 +140,7 @@
 			const childrenText = getChildrenText();
 			state.dataLang = null;
 			return childrenText;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
@@ -150,7 +150,7 @@
 				contents = contents.map(line => indentForPre + line);
 			}
 			return NEW_LINE.repeat(2) + contents.join(NEW_LINE) + (!state.inListItem ? NEW_LINE : "");
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
 		transform: ({element}) => {
@@ -159,37 +159,37 @@
 			const maxContinuingBackquoteLength = Math.max.apply(null, continuingBackquoteLengthList);
 			const backquotes = "`".repeat(maxContinuingBackquoteLength + 1);
 			return `${backquotes} ${text} ${backquotes}`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "P",
 		transform: ({getChildrenText, state}) => {
 			return NEW_LINE.repeat(state.inListItem ? 0 : 2) + getChildrenText();
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DETAILS",
 		transform: ({element}) => {
 			return `${NEW_LINE}<details>${element.innerHTML.replace(/<br>/g, "")}</details>`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DL",
 		transform: ({getChildrenText}) => {
 			return `${NEW_LINE.repeat(2)}<dl>${getChildrenText()}${NEW_LINE}</dl>`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DT",
 		transform: ({element}) => {
 			return `${NEW_LINE}${INDENT}<dt>${element.innerHTML}</dt>`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "DD",
 		transform: ({element}) => {
 			return `${NEW_LINE}${INDENT}<dd>${element.innerHTML}</dd>`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TABLE",
 		transform: ({getChildrenText}) => {
 			return `${NEW_LINE}${getChildrenText()}`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "THEAD",
 		transform: ({getChildrenText, element}) => {
@@ -203,20 +203,20 @@
 			});
 			const separator = `|${separators.join("|")}|`;
 			return `${getChildrenText()}${NEW_LINE}${separator}`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TR",
 		transform: ({getChildrenText}) => {
 			return `${NEW_LINE}|${getChildrenText()}`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TD" || tagName === "TH",
 		transform: ({getChildrenText}) => {
 			return ` ${getChildrenText()} |`;
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "HR",
-		transform: () => NEW_LINE + "___"
+		transform: () => NEW_LINE + "___",
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "BR",
 		transform: ({state}) => {
@@ -225,19 +225,19 @@
 			} else {
 				return NEW_LINE;
 			}
-		}
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "SCRIPT",
-		transform: () => ""
+		transform: () => "",
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "STYLE",
-		transform: () => ""
+		transform: () => "",
 	})];
 
 	// 上記にマッチしなかった場合
 	formats.push(new transformFormat({
 		isMatch: () => true,
-		transform: ({getChildrenText}) => getChildrenText()
+		transform: ({getChildrenText}) => getChildrenText(),
 	}));
 
 	const transformToMarkdownFormat = (element, state = new State()) => {
@@ -250,7 +250,7 @@
 		};
 		const initialResult = {
 			done: false,
-			text: ""
+			text: "",
 		};
 		return formats.reduce((result, format) => {
 			if (result.done) {
@@ -260,7 +260,7 @@
 				if (matched) {
 					return {
 						done: true,
-						text
+						text,
 					};
 				} else {
 					return result;
@@ -279,6 +279,6 @@
 	chrome.runtime.sendMessage({
 		method: "copy",
 		type: "markdown",
-		value: markdownFormat
+		value: markdownFormat,
 	});
 }
