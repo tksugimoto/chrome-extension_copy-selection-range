@@ -135,12 +135,9 @@
 		transform: ({element}) => `[${element.checked ? "x" : " "}] `,
 	}), new transformFormat({
 		isMatch: ({element}) => typeof element.hasAttribute === "function" && element.hasAttribute("data-lang"),
-		transform: ({element, state, getChildrenText}) => {
-			state.dataLang = element.getAttribute("data-lang");
-			const childrenText = getChildrenText();
-			state.dataLang = null;
-			return childrenText;
-		},
+		before: ({element, state}) => state.dataLang = element.getAttribute("data-lang"),
+		transform: ({getChildrenText}) => getChildrenText(),
+		after: ({state}) => state.dataLang = null,
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
