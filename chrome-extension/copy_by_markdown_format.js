@@ -66,24 +66,24 @@
 		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "UL",
+		before: ({state}) => state.listTypeHistory.push("*"),
 		transform: ({state, getChildrenText}) => {
-			state.listTypeHistory.push("*");
 			const childrenText = getChildrenText();
-			state.listTypeHistory.pop();
-			const newLineIfTopLevel = !state.inListItem ? NEW_LINE : "";
+			const newLineIfTopLevel = state.listDepth === 1 ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
 		},
+		after: ({state}) => state.listTypeHistory.pop(),
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "OL",
+		before: ({state}) => state.listTypeHistory.push("1."),
 		transform: ({state, getChildrenText}) => {
-			state.listTypeHistory.push("1.");
 			const childrenText = getChildrenText();
-			state.listTypeHistory.pop();
-			const newLineIfTopLevel = !state.inListItem ? NEW_LINE : "";
+			const newLineIfTopLevel = state.listDepth === 1 ? NEW_LINE : "";
 			// TopLevel(=リストの中のリストではない)リストの場合、改行が必要
 			return newLineIfTopLevel + childrenText;
 		},
+		after: ({state}) => state.listTypeHistory.pop(),
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "LI",
 		transform: ({state, getChildrenText}) => {
