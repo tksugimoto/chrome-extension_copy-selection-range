@@ -235,9 +235,9 @@
 
 	const transformToMarkdownFormat = (element, state = new State()) => {
 		const getChildrenText = () => {
-			return Array.from(element.childNodes).reduce((previousValue, child) => {
-				return previousValue + transformToMarkdownFormat(child, state);
-			}, "");
+			return Array.from(element.childNodes, child => {
+				return transformToMarkdownFormat(child, state);
+			}).join("");
 		};
 		const initialResult = {
 			done: false,
