@@ -15,6 +15,7 @@
 		constructor() {
 			this.listTypeHistory = [];
 			this.dataLang = null;
+			this.tableColumnWidths = null;
 		}
 		get deepestListType() {
 			return this.listTypeHistory[this.listTypeHistory.length - 1];
@@ -181,18 +182,36 @@
 		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TABLE",
+		before: ({element, state}) => {
+			if (state.tableColumnWidths) console.warn("<table>が入れ子になっているため正しく変換できません");
+			const tableColumnWidths = [];
+			element.querySelectorAll("tr").forEach(tr => {
+				Array.from(tr.children, cell => {
+					return cell.textContent.replace(RE_HEAD_LAST_NEW_LINES, "");
+				}).forEach((cellText, i)=> {
+					if (!tableColumnWidths[i]) tableColumnWidths[i] = 0;
+					tableColumnWidths[i] = Math.max(tableColumnWidths[i], cellText.length);
+				});
+			});
+			state.tableColumnWidths = tableColumnWidths;
+		},
 		transform: ({getChildrenText}) => {
 			return `${NEW_LINE}${getChildrenText()}`;
 		},
+		after: ({state}) => state.tableColumnWidths = null,
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "THEAD",
-		transform: ({getChildrenText, element}) => {
+		transform: ({getChildrenText, element, state}) => {
 			const textAligns = Array.from(element.querySelectorAll("tr > *")).map(e => e.style.textAlign);
-			const separators = textAligns.map(textAlign => {
+			const separators = textAligns.map((textAlign, index) => {
+				const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 1;
+				// -2: text-alignを表す先頭と末尾の2文字
+				// +2: TD / TH のテキストの前後に1文字ずつ追加した空白2文字
+				const middleHyphen = "-".repeat(columnWidth - 2 + 2);
 				switch (textAlign) {
-					case "right": return "--:";
-					case "center": return ":-:";
-					default: return "---";
+					case "right": return `-${middleHyphen}:`;
+					case "center": return `:${middleHyphen}:`;
+					default: return `-${middleHyphen}-`;
 				}
 			});
 			const separator = `|${separators.join("|")}|`;
@@ -205,8 +224,10 @@
 		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TD" || tagName === "TH",
-		transform: ({getChildrenText}) => {
-			return ` ${getChildrenText()} |`;
+		transform: ({element, getChildrenText, state}) => {
+			const index = Array.from(element.parentNode.children).indexOf(element);
+			const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 0;
+			return ` ${getChildrenText().padEnd(columnWidth)} |`;
 		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "HR",
