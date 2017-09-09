@@ -14,6 +14,7 @@
 	class State {
 		constructor() {
 			this.listTypeHistory = [];
+			this.dataLang = null;
 		}
 		get deepestListType() {
 			return this.listTypeHistory[this.listTypeHistory.length - 1];
