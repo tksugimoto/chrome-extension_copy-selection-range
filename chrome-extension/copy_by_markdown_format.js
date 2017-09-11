@@ -10,6 +10,13 @@
 	const escape = text => {
 		return text.replace(RE_SPECIAL_CHARS, "\\$&");
 	};
+	
+	const countStringWidth = str => {
+		return Array.from(str).reduce((totalWidth, char) => {
+			const charWidth = char.charCodeAt(0) > 255 ? 2 : 1;
+			return totalWidth + charWidth;
+		}, 0);
+	};
 
 	class State {
 		constructor() {
@@ -190,7 +197,7 @@
 					return cell.textContent.replace(RE_HEAD_LAST_NEW_LINES, "");
 				}).forEach((cellText, i)=> {
 					if (!tableColumnWidths[i]) tableColumnWidths[i] = 0;
-					tableColumnWidths[i] = Math.max(tableColumnWidths[i], cellText.length);
+					tableColumnWidths[i] = Math.max(tableColumnWidths[i], countStringWidth(cellText));
 				});
 			});
 			state.tableColumnWidths = tableColumnWidths;
@@ -227,7 +234,9 @@
 		transform: ({element, getChildrenText, state}) => {
 			const index = Array.from(element.parentNode.children).indexOf(element);
 			const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 0;
-			return ` ${getChildrenText().padEnd(columnWidth)} |`;
+			const childrenText = getChildrenText();
+			const textWidth = countStringWidth(childrenText);
+			return ` ${childrenText}${" ".repeat(columnWidth - textWidth)} |`;
 		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "HR",
