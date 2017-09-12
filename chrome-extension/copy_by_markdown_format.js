@@ -13,6 +13,8 @@
 
 	const charWidthOf = char => {
 		if (char.charCodeAt(0) <= 255) return 1;
+		// 半角カタカナ
+		if (/[\uFF65-\uFF9F]/.test(char)) return 1;
 		return 2;
 	};
 	
