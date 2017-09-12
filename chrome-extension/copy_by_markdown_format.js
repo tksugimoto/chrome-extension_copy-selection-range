@@ -10,11 +10,14 @@
 	const escape = text => {
 		return text.replace(RE_SPECIAL_CHARS, "\\$&");
 	};
+
+	const charWidthOf = char => {
+		return char.charCodeAt(0) > 255 ? 2 : 1;
+	};
 	
 	const countStringWidth = str => {
 		return Array.from(str).reduce((totalWidth, char) => {
-			const charWidth = char.charCodeAt(0) > 255 ? 2 : 1;
-			return totalWidth + charWidth;
+			return totalWidth + charWidthOf(char);
 		}, 0);
 	};
 
