@@ -12,7 +12,8 @@
 	};
 
 	const charWidthOf = char => {
-		return char.charCodeAt(0) > 255 ? 2 : 1;
+		if (char.charCodeAt(0) <= 255) return 1;
+		return 2;
 	};
 	
 	const countStringWidth = str => {
