@@ -202,7 +202,10 @@
 				Array.from(tr.children, cell => {
 					return cell.textContent.replace(RE_HEAD_LAST_NEW_LINES, "");
 				}).forEach((cellText, i)=> {
-					if (!tableColumnWidths[i]) tableColumnWidths[i] = 0;
+					//  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3
+					// -2: tbody部各列の先頭末尾の空白2文字分
+					// 3 - 2 = 1
+					if (!tableColumnWidths[i]) tableColumnWidths[i] = 1;
 					tableColumnWidths[i] = Math.max(tableColumnWidths[i], countStringWidth(cellText));
 				});
 			});
