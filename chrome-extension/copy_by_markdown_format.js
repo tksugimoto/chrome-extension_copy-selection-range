@@ -200,7 +200,7 @@
 			const tableColumnWidths = [];
 			element.querySelectorAll("tr").forEach(tr => {
 				Array.from(tr.children, cell => {
-					return cell.textContent.replace(RE_HEAD_LAST_NEW_LINES, "");
+					return cell.textContent.trim();
 				}).forEach((cellText, i)=> {
 					//  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3
 					// -2: tbody部各列の先頭末尾の空白2文字分
@@ -243,7 +243,7 @@
 		transform: ({element, getChildrenText, state}) => {
 			const index = Array.from(element.parentNode.children).indexOf(element);
 			const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 0;
-			const childrenText = getChildrenText();
+			const childrenText = getChildrenText().trim();
 			const textWidth = countStringWidth(childrenText);
 			return ` ${childrenText}${" ".repeat(columnWidth - textWidth)} |`;
 		},
