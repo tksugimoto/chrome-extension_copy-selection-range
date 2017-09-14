@@ -196,7 +196,11 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "TABLE",
 		before: ({element, state}) => {
-			if (state.tableColumnWidths) console.warn("<table>が入れ子になっているため正しく変換できません");
+			if (state.tableColumnWidths) {
+				console.warn("<table>が入れ子になっているため正しく変換できません");
+				state.tableColumnWidths.nested = true;
+				return;
+			}
 			const tableColumnWidths = [];
 			element.querySelectorAll("tr").forEach(tr => {
 				Array.from(tr.children, cell => {
@@ -211,10 +215,19 @@
 			});
 			state.tableColumnWidths = tableColumnWidths;
 		},
-		transform: ({getChildrenText}) => {
+		transform: ({getChildrenText, state, element}) => {
+			if (state.tableColumnWidths.nested) {
+				return element.textContent;
+			}
 			return `${NEW_LINE}${getChildrenText()}`;
 		},
-		after: ({state}) => state.tableColumnWidths = null,
+		after: ({state}) => {
+			if (state.tableColumnWidths.nested) {
+				delete state.tableColumnWidths.nested;
+				return;
+			}
+			state.tableColumnWidths = null;
+		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "THEAD",
 		transform: ({getChildrenText, element, state}) => {
