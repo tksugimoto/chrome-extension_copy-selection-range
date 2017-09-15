@@ -7,6 +7,12 @@
 	const RE_SPECIAL_CHARS = /[<>#*`~_\-\[\]\\]/g;
 	const RE_EMOJI = /^:.+:$/;
 
+	/** 最小 column幅: 1(= 3 - 2)  
+	 *  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3  
+	 * -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）  
+	 */
+	const minimumColumnWidth = 1;
+	
 	const escape = text => {
 		return text.replace(RE_SPECIAL_CHARS, "\\$&");
 	};
@@ -202,11 +208,6 @@
 				return;
 			}
 			const tableColumnWidths = [];
-			/** 最小 column幅: 1(= 3 - 2)  
-			 *  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3  
-			 * -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）  
-			 */
-			const minimumColumnWidth = 1;
 			element.querySelectorAll("tr").forEach(tr => {
 				Array.from(tr.children, cell => {
 					return cell.textContent.trim();
@@ -234,7 +235,7 @@
 		transform: ({getChildrenText, element, state}) => {
 			const textAligns = Array.from(element.querySelectorAll("tr > *")).map(e => e.style.textAlign);
 			const separators = textAligns.map((textAlign, index) => {
-				const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 1;
+				const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || minimumColumnWidth;
 				const middleHyphen = "-".repeat(columnWidth);
 				switch (textAlign) {
 					case "right": return `-${middleHyphen}:`;
@@ -254,7 +255,7 @@
 		isMatch: ({tagName}) => tagName === "TD" || tagName === "TH",
 		transform: ({element, getChildrenText, state}) => {
 			const index = Array.from(element.parentNode.children).indexOf(element);
-			const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 0;
+			const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || minimumColumnWidth;
 			const childrenText = getChildrenText().trim();
 			const textWidth = countStringWidth(childrenText);
 			return ` ${childrenText}${" ".repeat(Math.max(columnWidth - textWidth, 0))} |`;
