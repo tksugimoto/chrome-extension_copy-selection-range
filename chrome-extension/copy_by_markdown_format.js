@@ -207,7 +207,7 @@
 					return cell.textContent.trim();
 				}).forEach((cellText, i)=> {
 					//  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3
-					// -2: tbody部各列の先頭末尾の空白2文字分
+					// -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）
 					// 3 - 2 = 1
 					if (!tableColumnWidths[i]) tableColumnWidths[i] = 1;
 					tableColumnWidths[i] = Math.max(tableColumnWidths[i], countStringWidth(cellText));
@@ -234,9 +234,7 @@
 			const textAligns = Array.from(element.querySelectorAll("tr > *")).map(e => e.style.textAlign);
 			const separators = textAligns.map((textAlign, index) => {
 				const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 1;
-				// -2: text-alignを表す先頭と末尾の2文字
-				// +2: TD / TH のテキストの前後に1文字ずつ追加した空白2文字
-				const middleHyphen = "-".repeat(columnWidth - 2 + 2);
+				const middleHyphen = "-".repeat(columnWidth);
 				switch (textAlign) {
 					case "right": return `-${middleHyphen}:`;
 					case "center": return `:${middleHyphen}:`;
