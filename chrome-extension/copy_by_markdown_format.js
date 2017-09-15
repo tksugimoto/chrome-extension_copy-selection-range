@@ -202,15 +202,16 @@
 				return;
 			}
 			const tableColumnWidths = [];
+			/** 最小 column幅: 1(= 3 - 2)  
+			 *  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3  
+			 * -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）  
+			 */
+			const minimumColumnWidth = 1;
 			element.querySelectorAll("tr").forEach(tr => {
 				Array.from(tr.children, cell => {
 					return cell.textContent.trim();
 				}).forEach((cellText, i)=> {
-					//  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3
-					// -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）
-					// 3 - 2 = 1
-					if (!tableColumnWidths[i]) tableColumnWidths[i] = 1;
-					tableColumnWidths[i] = Math.max(tableColumnWidths[i], countStringWidth(cellText));
+					tableColumnWidths[i] = Math.max(tableColumnWidths[i] || minimumColumnWidth, countStringWidth(cellText));
 				});
 			});
 			state.tableColumnWidths = tableColumnWidths;
