@@ -258,7 +258,7 @@
 			const columnWidth = state.tableColumnWidths && state.tableColumnWidths[index] || 0;
 			const childrenText = getChildrenText().trim();
 			const textWidth = countStringWidth(childrenText);
-			return ` ${childrenText}${" ".repeat(columnWidth - textWidth)} |`;
+			return ` ${childrenText}${" ".repeat(Math.max(columnWidth - textWidth, 0))} |`;
 		},
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "HR",
