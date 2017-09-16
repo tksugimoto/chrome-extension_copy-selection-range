@@ -158,7 +158,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "PRE",
 		transform: ({element, state}) => {
-			let contents = ["```" + (state.dataLang || "")].concat(element.innerText.replace(RE_HEAD_LAST_NEW_LINES, "").split(NEW_LINE)).concat("```");
+			let contents = ["```" + (state.dataLang || "")].concat(element.textContent.replace(RE_HEAD_LAST_NEW_LINES, "").split(NEW_LINE)).concat("```");
 			if (state.inListItem) {
 				const indentForPre = INDENT.repeat(state.listDepth);
 				contents = contents.map(line => indentForPre + line);
@@ -168,7 +168,7 @@
 	}), new transformFormat({
 		isMatch: ({tagName}) => tagName === "CODE",
 		transform: ({element}) => {
-			const text = element.innerText;
+			const text = element.textContent;
 			const continuingBackquoteLengthList = text.split(/[^`]+/).map(s => s.length);
 			const maxContinuingBackquoteLength = Math.max.apply(null, continuingBackquoteLengthList);
 			const backquotes = "`".repeat(maxContinuingBackquoteLength + 1);
