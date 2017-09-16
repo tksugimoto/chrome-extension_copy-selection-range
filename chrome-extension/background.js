@@ -6,6 +6,10 @@ const generateContextMenuId = (() => {
 
 const menus = [{
 	id: generateContextMenuId(),
+	title: "選択範囲をMarkdown書式でコピー",
+	contentScriptFile: "/copy_by_markdown_format.js"
+}, {
+	id: generateContextMenuId(),
 	title: "選択範囲のHTMLをコピー",
 	contentScriptFile: "/copy_html.js"
 }];
