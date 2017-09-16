@@ -12,6 +12,10 @@ const menus = [{
 	id: generateContextMenuId(),
 	title: "選択範囲のHTMLをコピー",
 	contentScriptFile: "/copy_html.js"
+}, {
+	id: generateContextMenuId(),
+	title: "選択範囲をBacklog書式でコピー",
+	contentScriptFile: "/copy_by_backlog_format.js"
 }];
 
 function createContextMenus() {
