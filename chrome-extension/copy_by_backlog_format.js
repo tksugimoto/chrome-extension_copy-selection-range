@@ -15,10 +15,10 @@
 			state.listTypeHistory.push(tagName);
 		} else if (tagName === 'li') {
 			const listDepth = state.listTypeHistory.length;
-			const listType = state.listTypeHistory[listDepth - 1]
+			const listType = state.listTypeHistory[listDepth - 1];
 			text += NEW_LINE + (listType === 'ul' ? '-' : '+').repeat(listDepth) + ' ';
 		} else if (tagName === 'a') {
-			text += '[['
+			text += '[[';
 		} else if (tagName === 'img') {
 			text += `#image(${element.src})`;
 		} else if (tagName === 'p') {
