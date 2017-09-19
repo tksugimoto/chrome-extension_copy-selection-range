@@ -49,6 +49,6 @@
 	chrome.runtime.sendMessage({
 		method: 'copy',
 		type: 'backlog',
-		value: backlogFormat
+		value: backlogFormat,
 	});
 }
