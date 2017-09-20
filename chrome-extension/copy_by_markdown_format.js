@@ -322,7 +322,6 @@
 
 	chrome.runtime.sendMessage({
 		method: 'copy',
-		type: 'markdown',
 		value: markdownFormat,
 	});
 }

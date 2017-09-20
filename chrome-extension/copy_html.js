@@ -8,7 +8,6 @@
 
 	chrome.runtime.sendMessage({
 		method: 'copy',
-		type: 'html',
 		value: selectedHtml,
 	});
 }
