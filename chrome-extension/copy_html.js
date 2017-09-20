@@ -7,7 +7,7 @@
 	const selectedHtml = container.innerHTML;
 
 	chrome.runtime.sendMessage({
-		method: 'copy',
+		type: 'transformedText',
 		value: selectedHtml,
 	});
 }

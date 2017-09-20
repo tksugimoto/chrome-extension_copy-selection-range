@@ -41,8 +41,8 @@ chrome.contextMenus.onClicked.addListener(info => {
 	}
 });
 
-chrome.runtime.onMessage.addListener(({method, value}) => {
-	if (method === 'copy') {
+chrome.runtime.onMessage.addListener(({type, value}) => {
+	if (type === 'transformedText') {
 		copy(value);
 	}
 });

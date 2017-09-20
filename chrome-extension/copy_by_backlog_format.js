@@ -47,7 +47,7 @@
 	const backlogFormat = transformToBacklogFormat(container);
 
 	chrome.runtime.sendMessage({
-		method: 'copy',
+		type: 'transformedText',
 		value: backlogFormat,
 	});
 }

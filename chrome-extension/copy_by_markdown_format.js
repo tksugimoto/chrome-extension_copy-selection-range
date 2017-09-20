@@ -321,7 +321,7 @@
 	const markdownFormat = transformToMarkdownFormat(container);
 
 	chrome.runtime.sendMessage({
-		method: 'copy',
+		type: 'transformedText',
 		value: markdownFormat,
 	});
 }
