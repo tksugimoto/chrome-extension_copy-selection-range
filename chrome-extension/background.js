@@ -37,6 +37,11 @@ chrome.contextMenus.onClicked.addListener(info => {
 		chrome.tabs.executeScript({
 			frameId: info.frameId,
 			file: matchedMenu.contentScriptFile,
+		}, () => {
+			chrome.tabs.executeScript({
+				frameId: info.frameId,
+				file: '/get_selection_and_transform.js',
+			});
 		});
 	}
 });
