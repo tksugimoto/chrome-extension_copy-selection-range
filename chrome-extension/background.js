@@ -7,15 +7,15 @@ const generateContextMenuId = (() => {
 const menus = [{
 	id: generateContextMenuId(),
 	title: '選択範囲をMarkdown書式でコピー',
-	contentScriptFile: '/transformFromElement/markdown.js',
+	functionDefinitionScriptFile: '/transformFromElement/markdown.js',
 }, {
 	id: generateContextMenuId(),
 	title: '選択範囲のHTMLをコピー',
-	contentScriptFile: '/transformFromElement/html.js',
+	functionDefinitionScriptFile: '/transformFromElement/html.js',
 }, {
 	id: generateContextMenuId(),
 	title: '選択範囲をBacklog書式でコピー',
-	contentScriptFile: '/transformFromElement/backlog.js',
+	functionDefinitionScriptFile: '/transformFromElement/backlog.js',
 }];
 
 function createContextMenus() {
@@ -36,7 +36,7 @@ chrome.contextMenus.onClicked.addListener(info => {
 	if (matchedMenu) {
 		chrome.tabs.executeScript({
 			frameId: info.frameId,
-			file: matchedMenu.contentScriptFile,
+			file: matchedMenu.functionDefinitionScriptFile,
 		}, () => {
 			chrome.tabs.executeScript({
 				frameId: info.frameId,
