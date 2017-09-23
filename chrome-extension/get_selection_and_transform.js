@@ -4,11 +4,10 @@
 	for (let i = 0, len = selection.rangeCount; i < len; i++) {
 		container.appendChild(selection.getRangeAt(i).cloneContents());
 	}
-	const selectedHtml = container.innerHTML;
+	const transformedText = window.transformFromElement(container);
 
 	chrome.runtime.sendMessage({
-		method: 'copy',
-		type: 'html',
-		value: selectedHtml,
+		type: 'transformedText',
+		value: transformedText,
 	});
 }

@@ -39,16 +39,5 @@
 		return text;
 	};
 
-	const selection = window.getSelection();
-	const container = document.createElement('div');
-	for (let i = 0, len = selection.rangeCount; i < len; i++) {
-		container.appendChild(selection.getRangeAt(i).cloneContents());
-	}
-	const backlogFormat = transformToBacklogFormat(container);
-
-	chrome.runtime.sendMessage({
-		method: 'copy',
-		type: 'backlog',
-		value: backlogFormat,
-	});
+	window.transformFromElement = transformToBacklogFormat;
 }

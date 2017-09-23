@@ -7,15 +7,15 @@ const generateContextMenuId = (() => {
 const menus = [{
 	id: generateContextMenuId(),
 	title: '選択範囲をMarkdown書式でコピー',
-	contentScriptFile: '/copy_by_markdown_format.js',
+	functionDefinitionScriptFile: '/transformFromElement/markdown.js',
 }, {
 	id: generateContextMenuId(),
 	title: '選択範囲のHTMLをコピー',
-	contentScriptFile: '/copy_html.js',
+	functionDefinitionScriptFile: '/transformFromElement/html.js',
 }, {
 	id: generateContextMenuId(),
 	title: '選択範囲をBacklog書式でコピー',
-	contentScriptFile: '/copy_by_backlog_format.js',
+	functionDefinitionScriptFile: '/transformFromElement/backlog.js',
 }];
 
 function createContextMenus() {
@@ -36,13 +36,18 @@ chrome.contextMenus.onClicked.addListener(info => {
 	if (matchedMenu) {
 		chrome.tabs.executeScript({
 			frameId: info.frameId,
-			file: matchedMenu.contentScriptFile,
+			file: matchedMenu.functionDefinitionScriptFile,
+		}, () => {
+			chrome.tabs.executeScript({
+				frameId: info.frameId,
+				file: '/get_selection_and_transform.js',
+			});
 		});
 	}
 });
 
-chrome.runtime.onMessage.addListener(({method, value}) => {
-	if (method === 'copy') {
+chrome.runtime.onMessage.addListener(({type, value}) => {
+	if (type === 'transformedText') {
 		copy(value);
 	}
 });

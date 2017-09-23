@@ -313,16 +313,5 @@
 		}, initialResult).text;
 	};
 
-	const selection = window.getSelection();
-	const container = document.createElement('div');
-	for (let i = 0, len = selection.rangeCount; i < len; i++) {
-		container.appendChild(selection.getRangeAt(i).cloneContents());
-	}
-	const markdownFormat = transformToMarkdownFormat(container);
-
-	chrome.runtime.sendMessage({
-		method: 'copy',
-		type: 'markdown',
-		value: markdownFormat,
-	});
+	window.transformFromElement = transformToMarkdownFormat;
 }
