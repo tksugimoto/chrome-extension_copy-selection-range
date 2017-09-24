@@ -314,4 +314,9 @@
 	};
 
 	window.transformFromElement = transformToMarkdownFormat;
+	
+	// demo page用
+	try {
+		window.transformFunctions.markdown = transformToMarkdownFormat;
+	} catch (e) {}
 }
