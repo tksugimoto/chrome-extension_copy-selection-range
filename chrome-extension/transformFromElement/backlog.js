@@ -5,7 +5,7 @@
 			return element.textContent.replace(/^\n+|\n+$/g, '');
 		}
 		let text = '';
-		const tagName = element.tagName.toLowerCase();
+		const tagName = (element.tagName || '').toLowerCase();
 
 		// 開始
 		if (tagName.match(/^h(\d+)$/)) {
