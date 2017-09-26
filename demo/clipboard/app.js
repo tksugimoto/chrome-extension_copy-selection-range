@@ -28,8 +28,13 @@ formats.forEach(format => {
 
 
     format.transformAndUpdateOutput = htmlElement => {
-        const transformedText = format.transformFunction(htmlElement);
-        outputTextarea.value = transformedText;
+        try {
+            const transformedText = format.transformFunction(htmlElement);
+            outputTextarea.value = transformedText;
+        } catch (err) {
+            console.error(err);
+            outputTextarea.value = '変換処理でエラーが発生しました';
+        }
     };
 
     format.clearOutput = () => outputTextarea.value = '';
