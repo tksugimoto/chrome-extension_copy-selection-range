@@ -40,4 +40,9 @@
 	};
 
 	window.transformFromElement = transformToBacklogFormat;
+
+	// demo page用
+	try {
+		window.transformFunctions.backlog = transformToBacklogFormat;
+	} catch (e) {}
 }
