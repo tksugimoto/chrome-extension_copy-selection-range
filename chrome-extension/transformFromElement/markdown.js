@@ -123,7 +123,7 @@
 			const text = getChildrenText();
 			if (!text) return '';
 			const url = element.href.replace(/[()]/g, '\\$&');
-			const title = element.title.replace(/"\)/g, '"\\)');
+			const title = element.title.replace(/"\)/g, '"\\)').replace(/\n/g, '');
 			return `[${text}](${url} '${title}')`;
 		},
 	}), new transformFormat({
