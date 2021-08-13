@@ -6,13 +6,21 @@
 	"description": "選択範囲をコピー(HTML / Markdown書式 / Backlog書式)",
 
 	"permissions": [
+		"clipboardRead",
 		"contextMenus",
 		"activeTab"
 	],
 
+	"commands": {
+		"convert_to_markdown": {
+			"description": "クリップボードのhtmlをmarkdownに変換"
+		}
+	},
+
 	"background": {
 		"persistent": false,
 		"scripts": [
+			"transformFromElement/markdown.js",
 			"background.js"
 		]
 	}

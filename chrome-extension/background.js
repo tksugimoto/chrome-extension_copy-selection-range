@@ -61,3 +61,46 @@ const copy = text => {
 	document.body.removeChild(textarea);
 	textarea = null;
 };
+
+const htmlToElement = (htmlText) => {
+    const div = document.createElement('div');
+    div.innerHTML = htmlText;
+    return div;
+};
+
+const convertToMarkdown = (() => {
+	const pasteTarget = document.createElement('input');
+	document.activeElement.appendChild(pasteTarget);
+
+	pasteTarget.addEventListener('paste', evt => {
+		evt.preventDefault();
+		const clipboardData = evt.clipboardData;
+
+		console.debug(clipboardData.types);
+
+		Array.from(clipboardData.items)
+		.filter(({type}) => type === 'text/html')
+		.forEach(item => {
+			item.getAsString(htmlText => {
+				const htmlElement = htmlToElement(htmlText);
+				const markdownText = transformFromElement(htmlElement);
+				console.debug({
+					htmlText,
+					markdownText,
+				});
+				copy(markdownText);
+			});
+		});
+	});
+
+	return () => {
+		pasteTarget.focus();
+		document.execCommand('Paste', null, null);
+	};
+})();
+
+chrome.commands.onCommand.addListener(command => {
+	if (command === 'convert_to_markdown') {
+		convertToMarkdown();
+	}
+});
