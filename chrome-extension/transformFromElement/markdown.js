@@ -7,12 +7,12 @@
 	const RE_SPECIAL_CHARS = /[<>#*`~_[\]\\-]/g;
 	const RE_EMOJI = /^:.+:$/;
 
-	/** 最小 column幅: 1(= 3 - 2)  
-	 *  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3  
-	 * -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）  
+	/** 最小 column幅: 1(= 3 - 2)
+	 *  3: ヘッダーとの区切り行の各列は最低3文字必要なため、各列の最小幅は3
+	 * -2: text-alignを表す先頭と末尾の2文字（=tbody部各列の先頭末尾の空白2文字分）
 	 */
 	const minimumColumnWidth = 1;
-	
+
 	const escape = text => {
 		return text.replace(RE_SPECIAL_CHARS, '\\$&');
 	};
@@ -23,7 +23,7 @@
 		if (/[\uFF65-\uFF9F]/.test(char)) return 1;
 		return 2;
 	};
-	
+
 	const countStringWidth = str => {
 		return Array.from(str).reduce((totalWidth, char) => {
 			return totalWidth + charWidthOf(char);
@@ -314,7 +314,7 @@
 	};
 
 	window.transformFromElement = transformToMarkdownFormat;
-	
+
 	// demo page用
 	try {
 		window.transformFunctions.markdown = transformToMarkdownFormat;
