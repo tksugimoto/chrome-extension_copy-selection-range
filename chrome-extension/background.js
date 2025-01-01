@@ -34,14 +34,17 @@ chrome.runtime.onStartup.addListener(createContextMenus);
 chrome.contextMenus.onClicked.addListener((info, tab) => {
 	const matchedMenu = menus.find(menu => info.menuItemId === menu.id);
 	if (matchedMenu) {
+		setupOffscreenDocument();
 		const target = {
 			tabId: tab.id,
 			frameIds: [info.frameId],
 		};
+		console.log({file: matchedMenu.functionDefinitionScriptFile});
 		chrome.scripting.executeScript({
 			target,
 			files: [matchedMenu.functionDefinitionScriptFile],
 		}, () => {
+			console.log({file: 'get_selection_and_transform'});
 			chrome.scripting.executeScript({
 				target,
 				files: ['/get_selection_and_transform.js'],
@@ -51,14 +54,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 });
 
 chrome.runtime.onMessage.addListener(({type, value}) => {
+	console.log({type});
 	if (type === 'transformedText') {
 		copy(value);
 	}
 });
 
 const copy = async (text) => {
+	console.log('copy', text);
 	await setupOffscreenDocument();
 
+	console.log('write-clipboard-text');
 	chrome.runtime.sendMessage({
 		type: 'write-clipboard-text',
 		text,

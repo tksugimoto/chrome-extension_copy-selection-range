@@ -1,9 +1,16 @@
 const copy = (() => {
 	const textarea = document.getElementById('textarea');
 	return text => {
+		console.log({text});
 		textarea.value = text;
-		textarea.select();
-		document.execCommand('copy');
+		console.log({value: textarea.value});
+		setTimeout(() => {
+			textarea.select();
+		}, 200);
+		setTimeout(() => {
+			document.execCommand('copy');
+			// textarea.value = '';
+		}, 500);
 	};
 })();
 
