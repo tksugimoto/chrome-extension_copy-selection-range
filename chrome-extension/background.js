@@ -31,16 +31,20 @@ function createContextMenus() {
 chrome.runtime.onInstalled.addListener(createContextMenus);
 chrome.runtime.onStartup.addListener(createContextMenus);
 
-chrome.contextMenus.onClicked.addListener(info => {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
 	const matchedMenu = menus.find(menu => info.menuItemId === menu.id);
 	if (matchedMenu) {
-		chrome.tabs.executeScript({
-			frameId: info.frameId,
-			file: matchedMenu.functionDefinitionScriptFile,
+		const target = {
+			tabId: tab.id,
+			frameIds: [info.frameId],
+		};
+		chrome.scripting.executeScript({
+			target,
+			files: [matchedMenu.functionDefinitionScriptFile],
 		}, () => {
-			chrome.tabs.executeScript({
-				frameId: info.frameId,
-				file: '/get_selection_and_transform.js',
+			chrome.scripting.executeScript({
+				target,
+				files: ['/get_selection_and_transform.js'],
 			});
 		});
 	}
@@ -52,12 +56,38 @@ chrome.runtime.onMessage.addListener(({type, value}) => {
 	}
 });
 
-const copy = text => {
-	let textarea = document.createElement('textarea');
-	document.body.appendChild(textarea);
-	textarea.value = text;
-	textarea.select();
-	document.execCommand('copy');
-	document.body.removeChild(textarea);
-	textarea = null;
+const copy = async (text) => {
+	await setupOffscreenDocument();
+
+	chrome.runtime.sendMessage({
+		type: 'write-clipboard-text',
+		text,
+	});
 };
+
+const setupOffscreenDocument = (() => {
+	let creating;
+	return async () => {
+		const offscreenUrl = chrome.runtime.getURL('offscreen.html');
+		const existingContexts = await chrome.runtime.getContexts({
+			contextTypes: ['OFFSCREEN_DOCUMENT'],
+			documentUrls: [offscreenUrl],
+		});
+
+		if (existingContexts.length > 0) {
+			return;
+		}
+
+		if (creating) {
+			await creating;
+		} else {
+			creating = chrome.offscreen.createDocument({
+				url: offscreenUrl,
+				reasons: [chrome.offscreen.Reason.CLIPBOARD],
+				justification: 'Write text to the clipboard.',
+			});
+			await creating;
+			creating = null;
+		}
+	};
+})();

@@ -1,19 +1,18 @@
 {
 	"name": "Copy selection range",
 	"version": "0.1.0",
-	"manifest_version": 2,
+	"manifest_version": 3,
 
 	"description": "選択範囲をコピー(HTML / Markdown書式 / Backlog書式)",
 
 	"permissions": [
+		"offscreen",
+		"scripting",
 		"contextMenus",
 		"activeTab"
 	],
 
 	"background": {
-		"persistent": false,
-		"scripts": [
-			"background.js"
-		]
+		"service_worker": "background.js"
 	}
 }
